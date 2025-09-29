@@ -1,17 +1,35 @@
 "use client"
 
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState, memo, useCallback } from "react"
+import { safeDocumentAccess, safeWindowAccess } from "@/lib/client-utils"
 
-type Video = { id: string; title?: string; thumb?: string }
+type Video = { 
+  id: string; 
+  title?: string; 
+  thumb?: string;
+  creator?: string;
+  creatorPhoto?: string;
+  job?: string;
+}
 
 // Preconnect hint for faster Vimeo player boot
 function PreconnectVimeo() {
   useEffect(() => {
-    const link = document.createElement("link")
-    link.rel = "preconnect"
-    link.href = "https://player.vimeo.com"
-    document.head.appendChild(link)
-    return () => { document.head.removeChild(link) }
+    const link = safeDocumentAccess(() => {
+      const link = document.createElement("link")
+      link.rel = "preconnect"
+      link.href = "https://player.vimeo.com"
+      document.head.appendChild(link)
+      return link
+    }, null);
+    
+    return () => { 
+      if (link) {
+        safeDocumentAccess(() => {
+          document.head.removeChild(link)
+        }, undefined);
+      }
+    }
   }, [])
   return null
 }
@@ -115,52 +133,167 @@ function VideoCard({ video }: { video: Video }) {
           </button>
         </>
       )}
+
     </div>
   )
 }
 
 export default function LongFormShowcase() {
+  // Scroll animation effect
+  useEffect(() => {
+    const handleScroll = () => {
+      const longformSection = safeDocumentAccess(() => document.querySelector('#longform'), null);
+      if (!longformSection) return;
+      
+      const sectionRect = longformSection.getBoundingClientRect();
+      const sectionTop = sectionRect.top;
+      const sectionBottom = sectionRect.bottom;
+      const windowHeight = safeWindowAccess(() => window.innerHeight, 0);
+      
+      // Check if longform section is in view
+      if (sectionTop < windowHeight * 0.8 && sectionBottom > 0) {
+        // Animate header elements
+        const badge = longformSection.querySelector('.longform-badge');
+        const title = longformSection.querySelector('.longform-title');
+        const subtitle = longformSection.querySelector('.longform-subtitle');
+        
+        if (badge) {
+          setTimeout(() => {
+            (badge as HTMLElement).style.opacity = '1';
+            (badge as HTMLElement).style.transform = 'translateY(0)';
+          }, 200);
+        }
+        
+        if (title) {
+          setTimeout(() => {
+            (title as HTMLElement).style.opacity = '1';
+            (title as HTMLElement).style.transform = 'translateY(0)';
+          }, 400);
+        }
+        
+        if (subtitle) {
+          setTimeout(() => {
+            (subtitle as HTMLElement).style.opacity = '1';
+            (subtitle as HTMLElement).style.transform = 'translateY(0)';
+          }, 600);
+        }
+        
+        // Animate video cards
+        const videoCards = longformSection.querySelectorAll('.video-card');
+        videoCards.forEach((card, index) => {
+          setTimeout(() => {
+            (card as HTMLElement).style.opacity = '1';
+            (card as HTMLElement).style.transform = 'translateY(0)';
+          }, 800 + (index * 200));
+        });
+      }
+    };
+
+    // Initial call
+    handleScroll();
+    
+    // Add scroll event listener
+    safeWindowAccess(() => {
+      window.addEventListener('scroll', handleScroll, { passive: true });
+    }, undefined);
+    
+    return () => {
+      safeWindowAccess(() => {
+        window.removeEventListener('scroll', handleScroll);
+      }, undefined);
+    };
+  }, []);
+
   const videos: Video[] = [
-    { id: "1110221227", title: "Finance", thumb: "/v1.png" },
-    { id: "1110220089", title: "Community", thumb: "/v2.png" },
-    { id: "1110220012", title: "Ecommerce", thumb: "/v3.png" },
-    { id: "1110216237", title: "Productivity", thumb: "/v4.png" },
+    { 
+      id: "1110221227", 
+      title: "Finance", 
+      thumb: "/v1.png",
+      creator: "A. Chowdhary",
+      creatorPhoto: "/A%20chowdhary.jpg",
+      job: "Youtuber"
+    },
+    { 
+      id: "1110220089", 
+      title: "Community", 
+      thumb: "/v2.png",
+      creator: "Ro-connect",
+      creatorPhoto: "/discord.jpg",
+      job: "Discord Server"
+    },
+    { 
+      id: "1110220012", 
+      title: "SEO", 
+      thumb: "/v3.png",
+      creator: "Kevin Durov",
+      creatorPhoto: "/kevin.jpg",
+      job: "VSL"
+    },
+    { 
+      id: "1110216237", 
+      title: "Productivity", 
+      thumb: "/v4.png",
+      creator: "Wang Wei",
+      creatorPhoto: "/zhang.jpg",
+      job: "Youtuber"
+    },
   ]
 
   return (
     <section id="longform" className="relative max-w-6xl mx-auto mt-10 mb-40 px-4">
       <PreconnectVimeo />
-      {/* background glows */}
-      <div className="pointer-events-none absolute -top-24 left-1/3 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-24 right-1/4 h-64 w-64 rounded-full bg-indigo-500/10 blur-3xl" />
+      {/* Green Theme Background Effects */}
+      <div className="absolute -inset-20 bg-gradient-to-br from-emerald-900/15 via-teal-900/20 to-green-900/15 rounded-3xl blur-3xl" />
+      <div className="pointer-events-none absolute -top-24 left-1/3 h-80 w-80 rounded-full bg-gradient-to-br from-green-400/12 via-emerald-400/18 to-teal-400/12 blur-3xl animate-pulse" />
+      <div className="pointer-events-none absolute -bottom-24 right-1/4 h-72 w-72 rounded-full bg-gradient-to-bl from-teal-400/12 via-emerald-400/18 to-green-400/12 blur-3xl animate-pulse" style={{animationDelay: '2s'}} />
+      <div className="pointer-events-none absolute top-1/4 right-1/3 h-64 w-64 rounded-full bg-gradient-to-tr from-emerald-300/8 via-teal-300/12 to-green-300/8 blur-2xl" />
 
       <div className="text-center mb-12 relative">
-        <div className="inline-block bg-blue-500/10 border border-blue-500/50 text-blue-400 text-xs px-3 py-1 rounded-full mb-6 backdrop-blur-sm">
+        <div className="longform-badge inline-block bg-blue-500/10 border border-blue-500/50 text-blue-400 text-xs px-3 py-1 rounded-full mb-6 backdrop-blur-sm opacity-0 transition-all duration-700 ease-out" style={{ transform: 'translateY(30px)' }}>
           LONGFORM
         </div>
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-medium font-heading text-white mb-3">
+        <h2 className="longform-title text-3xl md:text-4xl lg:text-5xl font-medium font-heading text-white mb-3 opacity-0 transition-all duration-700 ease-out" style={{ transform: 'translateY(30px)' }}>
           Long-form Videos
         </h2>
-        <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
+        <p className="longform-subtitle text-lg md:text-xl text-gray-300 max-w-3xl mx-auto opacity-0 transition-all duration-700 ease-out" style={{ transform: 'translateY(30px)' }}>
           High-production storytelling designed to convert and retain.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
         {videos.map((v, i) => (
-          <div key={`${v.id}-${i}`} className="relative">
+          <div key={`${v.id}-${i}`} className="video-card relative opacity-0 transition-all duration-700 ease-out" style={{ transform: 'translateY(50px)', transitionDelay: `${i * 200}ms` }}>
             <span className="absolute z-10 top-3 left-3 text-xs px-2 py-1 rounded-full bg-white/5 border border-white/20 text-white/80 backdrop-blur">
               {v.title}
             </span>
             <VideoCard video={v} />
+            
+            {/* Creator Info Below Video */}
+            {v.creator && (
+              <div className="mt-4 flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-blue-500/30 flex-shrink-0">
+                  <img 
+                    src={v.creatorPhoto || "/placeholder-user.jpg"} 
+                    alt={v.creator} 
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = "/placeholder-user.jpg";
+                    }}
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-white font-semibold text-sm">
+                    {v.creator}
+                  </div>
+                  <div className="text-gray-400 text-xs">
+                    {v.job || "Creator"}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         ))}
-      </div>
-
-      <div className="text-center mt-10">
-        <a href="#contact" className="inline-block rounded-full border border-blue-500/40 bg-blue-500/10 px-6 py-3 text-blue-300 hover:bg-blue-500/20 transition-colors">
-          Get in touch
-        </a>
       </div>
     </section>
   )

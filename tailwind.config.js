@@ -9,6 +9,9 @@ module.exports = {
       fontFamily: {
         'sans': ['Satoshi', 'sans-serif'],
         'satoshi': ['Satoshi', 'sans-serif'],
+        'urbanist': ['Urbanist', 'sans-serif'],
+        'urbanist-bold': ['Urbanist', 'sans-serif'],
+        'urbanist-semibold-italic': ['Urbanist-SemiBoldItalic', 'sans-serif'],
       },
     },
   },

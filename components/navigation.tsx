@@ -2,46 +2,47 @@ import { Button } from "@/components/ui/button"
 
 export default function Navigation() {
   return (
-    <nav className="w-full bg-black py-6">
+    <nav className="fixed top-0 left-0 right-0 z-50 w-full py-6">
       <div className="flex justify-center">
-        <div className="bg-black/80 backdrop-blur-sm rounded-2xl border border-gray-600/70 shadow-2xl py-4 px-12 max-w-4xl">
+        <div className="bg-black/20 backdrop-blur-md rounded-full border border-white/20 shadow-2xl py-4 px-8 max-w-2xl">
           <div className="flex items-center justify-between">
-            {/* Logo */}
-            <div className="flex items-center">
-              {/* ADIOS STUDIO Style Logo */}
-              <div className="flex items-center border border-blue-500 rounded-md overflow-hidden shadow-lg">
-                {/* Left Section - Black Background */}
-                <div className="bg-black px-2 py-1.5">
-                  <span className="text-white text-xs font-bold tracking-wide">ADIOS</span>
+            {/* Personal Branding Card */}
+            <div className="flex items-center gap-3">
+              {/* Circular Profile Picture with White Outline */}
+              <div className="relative">
+                <div className="w-10 h-10 rounded-full border-2 border-white/30 overflow-hidden shadow-lg">
+                  <img 
+                    src="/adityachad.png" 
+                    alt="Aditya" 
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      // Fallback to placeholder if image not found
+                      e.currentTarget.src = "/placeholder-user.jpg";
+                    }}
+                  />
                 </div>
-                {/* Right Section - White Background */}
-                <div className="bg-white px-2 py-1.5">
-                  <span className="text-black text-xs font-bold tracking-wide">STUDIOS</span>
+              </div>
+              
+              {/* Name */}
+              <div className="flex flex-col">
+                <div className="text-white font-bold text-base tracking-wide">
+                  Aditya | Adios Studios
                 </div>
               </div>
             </div>
 
             {/* Navigation Links */}
             <div className="hidden md:flex items-center gap-6 ml-8">
-              <a href="#portfolio" className="text-gray-200 hover:text-white transition-colors duration-200 font-medium px-3 py-2 rounded-lg hover:bg-gray-700/80">
+              <a href="#portfolio" className="text-gray-200 hover:text-white transition-all duration-300 font-medium text-sm no-underline px-4 py-2 rounded-full hover:bg-white/10 hover:backdrop-blur-sm hover:shadow-lg hover:border hover:border-white/20">
                 Portfolio
               </a>
-              <a href="#reviews" className="text-gray-200 hover:text-white transition-colors duration-200 font-medium px-3 py-2 rounded-lg hover:bg-gray-700/80">
-                Reviews
+              <a href="#testimonials" className="text-gray-200 hover:text-white transition-all duration-300 font-medium text-sm no-underline px-4 py-2 rounded-full hover:bg-white/10 hover:backdrop-blur-sm hover:shadow-lg hover:border hover:border-white/20">
+                Testimonials
               </a>
-              <a href="#about" className="text-gray-200 hover:text-white transition-colors duration-200 font-medium px-3 py-2 rounded-lg hover:bg-gray-700/80">
+              <a href="#about" className="text-gray-200 hover:text-white transition-all duration-300 font-medium text-sm no-underline px-4 py-2 rounded-full hover:bg-white/10 hover:backdrop-blur-sm hover:shadow-lg hover:border hover:border-white/20">
                 About Us
               </a>
-              <a href="#faqs" className="text-gray-200 hover:text-white transition-colors duration-200 font-medium px-3 py-2 rounded-lg hover:bg-gray-700/80">
-                FAQs
-              </a>
             </div>
-
-            {/* CTA Button */}
-            <Button className="bg-black text-white border-2 border-white hover:bg-blue-500 hover:border-blue-500 px-8 py-3 rounded-full font-semibold transition-all duration-300 flex items-center gap-2 hover:scale-105 shadow-lg hover:shadow-xl">
-              Book a call
-              <span className="text-white group-hover:text-white">→</span>
-            </Button>
           </div>
         </div>
       </div>

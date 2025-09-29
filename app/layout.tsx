@@ -1,10 +1,11 @@
 import type React from "react"
 
-import type { Metadata } from "next"
- 
+import type { Metadata } from "next" 
+
 import "tw-animate-css";
 import "../styles/globals.css";
 import "./globals.css"
+import "../lib/error-suppression"
 
 export const metadata: Metadata = {
   title: "Adios Studios — YouTube Channel Growth",
@@ -19,7 +20,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className="font-satoshi antialiased">{children}</body>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+      </head>
+      <body className="font-satoshi antialiased" suppressHydrationWarning={true}>{children}</body>
     </html>
   )
 }
