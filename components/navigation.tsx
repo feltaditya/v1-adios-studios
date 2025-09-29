@@ -33,13 +33,13 @@ export default function Navigation() {
 
             {/* Navigation Links */}
             <div className="hidden md:flex items-center gap-6 ml-8">
-              <a href="#portfolio" className="text-gray-200 hover:text-white transition-all duration-300 font-medium text-sm no-underline px-4 py-2 rounded-full hover:bg-white/10 hover:backdrop-blur-sm hover:shadow-lg hover:border hover:border-white/20">
+              <a href="#portfolio" className="text-gray-300 hover:text-white transition-all duration-200 font-medium text-sm no-underline px-4 py-2 rounded-full hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]">
                 Portfolio
               </a>
-              <a href="#testimonials" className="text-gray-200 hover:text-white transition-all duration-300 font-medium text-sm no-underline px-4 py-2 rounded-full hover:bg-white/10 hover:backdrop-blur-sm hover:shadow-lg hover:border hover:border-white/20">
+              <a href="#testimonials" className="text-gray-300 hover:text-white transition-all duration-200 font-medium text-sm no-underline px-4 py-2 rounded-full hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]">
                 Testimonials
               </a>
-              <a href="#about" className="text-gray-200 hover:text-white transition-all duration-300 font-medium text-sm no-underline px-4 py-2 rounded-full hover:bg-white/10 hover:backdrop-blur-sm hover:shadow-lg hover:border hover:border-white/20">
+              <a href="#about" className="text-gray-300 hover:text-white transition-all duration-200 font-medium text-sm no-underline px-4 py-2 rounded-full hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]">
                 About Us
               </a>
             </div>

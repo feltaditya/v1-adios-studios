@@ -174,21 +174,21 @@ export default function HomePage() {
           setTimeout(() => {
             (badge as HTMLElement).style.opacity = '1';
             (badge as HTMLElement).style.transform = 'translateY(0)';
-          }, 200);
+          }, 100);
         }
         
         if (title) {
           setTimeout(() => {
             (title as HTMLElement).style.opacity = '1';
             (title as HTMLElement).style.transform = 'translateY(0)';
-          }, 400);
+          }, 180);
         }
         
         if (subtitle) {
           setTimeout(() => {
             (subtitle as HTMLElement).style.opacity = '1';
             (subtitle as HTMLElement).style.transform = 'translateY(0)';
-          }, 600);
+          }, 260);
         }
         
         // Animate service cards - all together smoothly
@@ -218,10 +218,11 @@ export default function HomePage() {
   // Process Steps Scroll Animation
   useEffect(() => {
     const handleProcessScroll = () => {
-      const processSteps = safeDocumentAccess(() => document.querySelectorAll('.process-step'), []);
+      const processSteps = safeDocumentAccess<NodeListOf<Element> | null>(() => document.querySelectorAll('.process-step'), null);
       const windowHeight = safeWindowAccess(() => window.innerHeight, 0);
+      if (!processSteps) return;
       
-      processSteps.forEach((step, index) => {
+      Array.from(processSteps).forEach((step, index) => {
         const stepRect = step.getBoundingClientRect();
         const stepTop = stepRect.top;
         const stepBottom = stepRect.bottom;
@@ -232,7 +233,7 @@ export default function HomePage() {
           setTimeout(() => {
             (step as HTMLElement).style.opacity = '1';
             (step as HTMLElement).style.transform = 'translateY(0)';
-          }, index * 200); // 200ms delay between each step
+          }, index * 120); // slightly faster: 120ms between each step
         }
       });
     };
@@ -619,7 +620,7 @@ export default function HomePage() {
 
         {/* Hero Section - Blue Theme */}
         <div className="relative text-center max-w-4xl mx-auto mb-16">
-          {/* Blue Background Effects */}
+          {/* Blurry Bluish Background Effects */}
           <div className="absolute -inset-20 bg-gradient-to-br from-blue-900/20 via-indigo-900/30 to-cyan-900/20 rounded-3xl blur-3xl"></div>
           <div className="absolute -inset-10 bg-gradient-to-tr from-blue-800/10 via-indigo-800/15 to-cyan-800/10 rounded-2xl blur-2xl"></div>
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-gradient-radial from-blue-400/5 via-transparent to-transparent rounded-full blur-3xl"></div>
@@ -632,6 +633,7 @@ export default function HomePage() {
                 (Or You Don't Pay)
               </div>
             </h1>
+            
 
             <p className="text-lg md:text-xl text-gray-200 mb-6 max-w-3xl mx-auto animate-summon-rise" style={{fontFamily: 'Urbanist, sans-serif', fontWeight: 600, fontStyle: 'italic'}}>
               <span className="whitespace-nowrap -ml-4">In just 60 days, with only 2 hours of raw content / month Add $10K to $25K in your revenue </span><br />
@@ -1190,20 +1192,24 @@ export default function HomePage() {
         </div>
 
 
-        {/* Portfolio Section - Galaxy Theme */}
+        {/* Portfolio Section - Blue Theme */}
         <div id="portfolio" className="max-w-6xl mx-auto mb-32 mt-32 relative">
-          {/* Galaxy Background Effects */}
-          <div className="absolute -inset-24 bg-gradient-to-br from-violet-900/20 via-purple-900/25 to-fuchsia-900/20 rounded-3xl blur-3xl"></div>
-          <div className="absolute -top-32 left-1/4 w-80 h-80 bg-gradient-to-br from-purple-400/15 via-violet-400/20 to-fuchsia-400/15 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-gradient-to-bl from-indigo-400/15 via-purple-400/20 to-pink-400/15 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1.5s'}}></div>
-          <div className="absolute top-1/2 left-0 w-64 h-64 bg-gradient-to-r from-violet-300/10 via-purple-300/15 to-fuchsia-300/10 rounded-full blur-2xl"></div>
-          <div className="absolute top-0 right-0 w-56 h-56 bg-gradient-to-bl from-pink-300/8 via-rose-300/12 to-orange-300/8 rounded-full blur-2xl"></div>
+          {/* Blue Background Effects */}
+          <div className="absolute -inset-24 bg-gradient-to-br from-blue-900/20 via-indigo-900/25 to-cyan-900/20 rounded-3xl blur-3xl"></div>
+          <div className="absolute -top-32 left-1/4 w-80 h-80 bg-gradient-to-br from-blue-400/15 via-indigo-400/20 to-cyan-400/15 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-gradient-to-bl from-cyan-400/15 via-blue-400/20 to-indigo-400/15 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1.5s'}}></div>
+          <div className="absolute top-1/2 left-0 w-64 h-64 bg-gradient-to-r from-blue-300/10 via-indigo-300/15 to-cyan-300/10 rounded-full blur-2xl"></div>
+          <div className="absolute top-0 right-0 w-56 h-56 bg-gradient-to-bl from-cyan-300/8 via-blue-300/12 to-indigo-300/8 rounded-full blur-2xl"></div>
           {/* Header */}
           <div className="text-center mb-24 relative">
             <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-blue-500/5 rounded-full blur-xl"></div>
             <div className="inline-block bg-blue-500/10 border border-blue-500/50 text-blue-400 text-sm px-6 py-3 rounded-full mb-12 animate-slide-up-1 opacity-0 backdrop-blur-sm font-semibold">
               PORTFOLIO
             </div>
+            {/* New Headline below Portfolio: Thumbnails */}
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-6 opacity-0 animate-slide-up-2">
+              Thumbnails
+            </h2>
             <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto animate-slide-up-3 opacity-0">
               Our Finest Thumbnail with CTA, Psychology & Strategic Design
             </p>
@@ -1315,25 +1321,25 @@ export default function HomePage() {
         {/* Long-form Section */}
         <LongFormShowcase />
 
-        {/* Testimonials Section - Galaxy Theme (Portfolio) */}
+        {/* Testimonials Section - Emerald Theme */}
         <div className="max-w-7xl mx-auto mb-48 mt-32 relative" id="testimonials">
-          {/* Galaxy Background Effects - Same as Portfolio */}
-          <div className="absolute -inset-24 bg-gradient-to-br from-violet-900/20 via-purple-900/25 to-fuchsia-900/20 rounded-3xl blur-3xl"></div>
-          <div className="absolute -top-32 left-1/4 w-80 h-80 bg-gradient-to-br from-purple-400/15 via-violet-400/20 to-fuchsia-400/15 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-gradient-to-bl from-indigo-400/15 via-purple-400/20 to-pink-400/15 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1.5s'}}></div>
-          <div className="absolute top-1/2 left-0 w-64 h-64 bg-gradient-to-r from-violet-300/10 via-purple-300/15 to-fuchsia-300/10 rounded-full blur-2xl"></div>
-          <div className="absolute top-0 right-0 w-56 h-56 bg-gradient-to-bl from-pink-300/8 via-rose-300/12 to-orange-300/8 rounded-full blur-2xl"></div>
+          {/* Emerald Background Effects */}
+          <div className="absolute -inset-24 bg-gradient-to-br from-emerald-900/20 via-teal-900/25 to-green-900/20 rounded-3xl blur-3xl"></div>
+          <div className="absolute -top-32 left-1/4 w-80 h-80 bg-gradient-to-br from-emerald-400/15 via-teal-400/20 to-green-400/15 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-gradient-to-bl from-teal-400/15 via-emerald-400/20 to-green-400/15 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1.5s'}}></div>
+          <div className="absolute top-1/2 left-0 w-64 h-64 bg-gradient-to-r from-emerald-300/10 via-teal-300/15 to-green-300/10 rounded-full blur-2xl"></div>
+          <div className="absolute top-0 right-0 w-56 h-56 bg-gradient-to-bl from-green-300/8 via-emerald-300/12 to-teal-300/8 rounded-full blur-2xl"></div>
           
           {/* Header */}
           <div className="text-center mb-24 relative">
             <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-blue-500/5 rounded-full blur-xl"></div>
-            <div className="testimonials-badge inline-block bg-blue-500/10 border border-blue-500/50 text-blue-400 text-sm px-4 py-2 rounded-full mb-6 backdrop-blur-sm opacity-0 transition-all duration-700 ease-out" style={{ transform: 'translateY(30px)' }}>
+            <div className="testimonials-badge inline-block bg-blue-500/10 border border-blue-500/50 text-blue-400 text-sm px-4 py-2 rounded-full mb-6 backdrop-blur-sm opacity-0 transition-all duration-300 ease-out" style={{ transform: 'translateY(30px)' }}>
               TESTIMONIALS
             </div>
-            <h2 className="testimonials-title text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 opacity-0 transition-all duration-700 ease-out" style={{ transform: 'translateY(30px)' }}>
+            <h2 className="testimonials-title text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 opacity-0 transition-all duration-300 ease-out" style={{ transform: 'translateY(30px)' }}>
               What our <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">clients</span> say
             </h2>
-            <p className="testimonials-subtitle text-lg md:text-xl text-gray-300 max-w-3xl mx-auto opacity-0 transition-all duration-700 ease-out" style={{ transform: 'translateY(30px)' }}>
+            <p className="testimonials-subtitle text-lg md:text-xl text-gray-300 max-w-3xl mx-auto opacity-0 transition-all duration-300 ease-out" style={{ transform: 'translateY(30px)' }}>
               Real results from real clients
             </p>
           </div>
@@ -1503,13 +1509,13 @@ export default function HomePage() {
           {/* Header */}
           <div className="text-center mb-24 relative">
             <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-blue-500/5 rounded-full blur-xl"></div>
-            <div className="about-badge inline-block bg-blue-500/10 border border-blue-500/50 text-blue-400 text-sm px-6 py-3 rounded-full mb-12 backdrop-blur-sm font-semibold opacity-0 transition-all duration-700 ease-out" style={{ transform: 'translateY(30px)' }}>
+            <div className="about-badge inline-block bg-blue-500/10 border border-blue-500/50 text-blue-400 text-sm px-6 py-3 rounded-full mb-12 backdrop-blur-sm font-semibold opacity-0 transition-all duration-300 ease-out" style={{ transform: 'translateY(30px)' }}>
               ABOUT US
             </div>
-            <h2 className="about-title text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 opacity-0 transition-all duration-700 ease-out" style={{ transform: 'translateY(30px)' }}>
+            <h2 className="about-title text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 opacity-0 transition-all duration-300 ease-out" style={{ transform: 'translateY(30px)' }}>
               We <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Practice</span> what we preach
             </h2>
-            <p className="about-subtitle text-lg md:text-xl text-gray-300 max-w-3xl mx-auto opacity-0 transition-all duration-700 ease-out" style={{ transform: 'translateY(30px)' }}>
+            <p className="about-subtitle text-lg md:text-xl text-gray-300 max-w-3xl mx-auto opacity-0 transition-all duration-300 ease-out" style={{ transform: 'translateY(30px)' }}>
               Work with experts who acquire customers through YouTube
             </p>
           </div>

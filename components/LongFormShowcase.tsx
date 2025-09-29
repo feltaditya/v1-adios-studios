@@ -161,21 +161,21 @@ export default function LongFormShowcase() {
           setTimeout(() => {
             (badge as HTMLElement).style.opacity = '1';
             (badge as HTMLElement).style.transform = 'translateY(0)';
-          }, 200);
+          }, 100);
         }
         
         if (title) {
           setTimeout(() => {
             (title as HTMLElement).style.opacity = '1';
             (title as HTMLElement).style.transform = 'translateY(0)';
-          }, 400);
+          }, 180);
         }
         
         if (subtitle) {
           setTimeout(() => {
             (subtitle as HTMLElement).style.opacity = '1';
             (subtitle as HTMLElement).style.transform = 'translateY(0)';
-          }, 600);
+          }, 260);
         }
         
         // Animate video cards

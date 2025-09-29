@@ -38,6 +38,33 @@
   animation: float 6s ease-in-out infinite;
 }
 
+/* Floating Arrow Animation - Smooth up and down movement */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Responsive arrow positioning */
+@media (max-width: 768px) {
+  .floating-arrow {
+    left: 200px !important; /* Adjust for mobile */
+    width: 30px !important;
+    height: 30px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-arrow {
+    left: 150px !important; /* Adjust for small mobile */
+    width: 25px !important;
+    height: 25px !important;
+  }
+}
+
 /* Wiggle animation for button */
 @keyframes wiggle {
   0%, 100% {
@@ -357,8 +384,8 @@
 }
 
 .animate-summon-rise {
-  animation: summon-rise 0.8s ease-out forwards;
-  animation-delay: 0.6s;
+  animation: summon-rise 0.6s ease-out forwards; /* faster and subtler */
+  animation-delay: 0.25s; /* show sooner */
   opacity: 0;
 }
 
