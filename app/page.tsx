@@ -1229,7 +1229,7 @@ export default function HomePage() {
                                 {thumbnails.map((thumbnail, index) => (
                   <div key={index} className="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 px-6">
                     <div className={`relative overflow-hidden shadow-lg bg-black group cursor-pointer transition-all duration-300 border-2 ${
-                      index === currentSlide ? 'transform scale-105 shadow-2xl shadow-blue-500/20 border-blue-500' : 'transform scale-100 hover:scale-105 border-transparent hover:border-blue-500/50'
+                      index === currentSlide ? 'transform scale-105 shadow-2xl border-transparent' : 'transform scale-100 hover:scale-105 border-transparent'
                     }`}>
                                             <div className="aspect-video relative">
                         {/* Loading State */}

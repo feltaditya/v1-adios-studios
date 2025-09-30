@@ -1,10 +1,11 @@
 "use client"
 
-import React, { useEffect, useMemo, useState, memo, useCallback } from "react"
+import React, { useEffect } from "react"
 import { safeDocumentAccess, safeWindowAccess } from "@/lib/client-utils"
+import Script from "next/script"
 
 type Video = { 
-  id: string; 
+  wistiaId: string;
   title?: string; 
   thumb?: string;
   creator?: string;
@@ -13,127 +14,31 @@ type Video = {
 }
 
 // Preconnect hint for faster Vimeo player boot
-function PreconnectVimeo() {
+function PreconnectWistia() {
   useEffect(() => {
-    const link = safeDocumentAccess(() => {
-      const link = document.createElement("link")
-      link.rel = "preconnect"
-      link.href = "https://player.vimeo.com"
-      document.head.appendChild(link)
-      return link
-    }, null);
-    
-    return () => { 
-      if (link) {
-        safeDocumentAccess(() => {
-          document.head.removeChild(link)
-        }, undefined);
-      }
+    const links: HTMLLinkElement[] = []
+    const add = (href: string) => {
+      const l = document.createElement('link')
+      l.rel = 'preconnect'
+      l.href = href
+      document.head.appendChild(l)
+      links.push(l)
+    }
+    add('https://fast.wistia.com')
+    add('https://embedwistia-a.akamaihd.net')
+    return () => {
+      links.forEach(l => document.head.removeChild(l))
     }
   }, [])
   return null
 }
 
 function VideoCard({ video }: { video: Video }) {
-  const [play, setPlay] = useState(false)
-  const iframeSrc = useMemo(
-    () => `https://player.vimeo.com/video/${video.id}?autoplay=1&muted=0&loop=0&byline=0&title=0&portrait=0`,
-    [video.id]
-  )
-  const [muted, setMuted] = useState(false)
-  const [paused, setPaused] = useState(false)
-  const iframeRef = React.useRef<HTMLIFrameElement | null>(null)
-  const [thumb, setThumb] = useState<string | null>(video.thumb ?? null)
-  useEffect(() => {
-    if (video.thumb) { setThumb(video.thumb); return }
-    fetch(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/${video.id}`)
-      .then(r => r.json())
-      .then(d => {
-        const url = (d.thumbnail_url as string) || null
-        setThumb(url ? url.replace(/_[0-9]+x[0-9]+\.(jpg|png)$/i, '_1280.$1') : null)
-      })
-      .catch(() => setThumb(null))
-  }, [video.id, video.thumb])
-
   return (
     <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-black/70 border border-blue-500/20 shadow-2xl backdrop-blur-sm group">
-      {!play && (
-        <button
-          className="absolute inset-0 flex items-center justify-center"
-          onClick={() => setPlay(true)}
-          aria-label={`Play ${video.title ?? "video"}`}
-        >
-          {thumb ? (
-            <img src={thumb} alt={video.title ?? 'Video thumbnail'} className="absolute inset-0 h-full w-full object-cover" loading="lazy" decoding="async" onError={() => setThumb(null)} />
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-slate-800" />
-          )}
-                     <div className="relative z-10 h-16 w-16 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center shadow-lg ring-1 ring-white/30 transition-all duration-300 group-hover:scale-105 group-hover:bg-black/50 group-hover:ring-white/50">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-10 w-10 translate-x-0.5">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-          </div>
-        </button>
-      )}
-      {play && (
-        <iframe
-          src={iframeSrc}
-          className="absolute inset-0 h-full w-full"
-          frameBorder="0"
-          allow="autoplay; fullscreen; picture-in-picture"
-          allowFullScreen
-          ref={iframeRef}
-        />
-      )}
-
-      {play && (
-        <>
-          {/* Controls */}
-          <button
-            onClick={() => {
-              const next = !muted
-              setMuted(next)
-              try {
-                iframeRef.current?.contentWindow?.postMessage(
-                  JSON.stringify({ method: 'setMuted', value: next }),
-                  '*'
-                )
-              } catch {}
-            }}
-            className="absolute top-3 right-3 z-10 rounded-full bg-black/60 p-2 text-white backdrop-blur hover:bg-black/80 transition-colors"
-            aria-label={muted ? 'Unmute' : 'Mute'}
-          >
-            {muted ? (
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5"><path d="M15.54 8.46a.75.75 0 1 1 1.06 1.06L13.06 13l3.54 3.54a.75.75 0 1 1-1.06 1.06L12 14.06l-3.54 3.54a.75.75 0 1 1-1.06-1.06L10.94 13 7.4 9.46a.75.75 0 1 1 1.06-1.06L12 11.94l3.54-3.48z"/></svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.06c1.48-.74 2.5-2.26 2.5-4.03z"/></svg>
-            )}
-          </button>
-          <button
-            onClick={() => {
-              const next = !paused
-              setPaused(next)
-              try {
-                iframeRef.current?.contentWindow?.postMessage(
-                  JSON.stringify({ method: next ? 'pause' : 'play' }),
-                  '*'
-                )
-              } catch {}
-            }}
-            className="absolute inset-0 flex items-center justify-center"
-            aria-label={paused ? 'Play' : 'Pause'}
-          >
-            <div className="h-12 w-12 rounded-full bg-black/50 backdrop-blur flex items-center justify-center text-white">
-              {paused ? (
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6 translate-x-0.5"><path d="M8 5v14l11-7z"/></svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6"><path d="M10 5h2v14h-2zM14 5h2v14h-2z"/></svg>
-              )}
-            </div>
-          </button>
-        </>
-      )}
-
+      <div className="absolute inset-0">
+        <wistia-player media-id={video.wistiaId} aspect="1.7777777777777777"></wistia-player>
+      </div>
     </div>
   )
 }
@@ -205,43 +110,47 @@ export default function LongFormShowcase() {
   }, []);
 
   const videos: Video[] = [
-    { 
-      id: "1110221227", 
-      title: "Finance", 
-      thumb: "/v1.png",
-      creator: "A. Chowdhary",
-      creatorPhoto: "/A%20chowdhary.jpg",
-      job: "Youtuber"
-    },
-    { 
-      id: "1110220089", 
-      title: "Community", 
-      thumb: "/v2.png",
-      creator: "Ro-connect",
-      creatorPhoto: "/discord.jpg",
-      job: "Discord Server"
-    },
-    { 
-      id: "1110220012", 
-      title: "SEO", 
-      thumb: "/v3.png",
-      creator: "Kevin Durov",
-      creatorPhoto: "/kevin.jpg",
-      job: "VSL"
-    },
-    { 
-      id: "1110216237", 
-      title: "Productivity", 
-      thumb: "/v4.png",
-      creator: "Wang Wei",
-      creatorPhoto: "/zhang.jpg",
-      job: "Youtuber"
-    },
+    { wistiaId: "1kqkfbf2rd", title: "Finance", thumb: "/v1.png", creator: "A. Chowdhary", creatorPhoto: "/A%20chowdhary.jpg", job: "Youtuber" },
+    { wistiaId: "k1lbncd739", title: "Community", thumb: "/v2.png", creator: "Ro-connect", creatorPhoto: "/discord.jpg", job: "Discord Server" },
+    { wistiaId: "8914b1xoti", title: "SEO", thumb: "/v3.png", creator: "Kevin Durov", creatorPhoto: "/kevin.jpg", job: "VSL" },
+    { wistiaId: "7jcncibxqi", title: "Productivity", thumb: "/v4.png", creator: "Wang Wei", creatorPhoto: "/zhang.jpg", job: "Youtuber" },
   ]
 
   return (
     <section id="longform" className="relative max-w-6xl mx-auto mt-10 mb-40 px-4">
-      <PreconnectVimeo />
+      <PreconnectWistia />
+      {/* Wistia scripts for long-form players */}
+      <Script src="https://fast.wistia.com/player.js" strategy="afterInteractive" />
+      <Script src="https://fast.wistia.com/embed/1kqkfbf2rd.js" type="module" strategy="afterInteractive" />
+      <Script src="https://fast.wistia.com/embed/k1lbncd739.js" type="module" strategy="afterInteractive" />
+      <Script src="https://fast.wistia.com/embed/8914b1xoti.js" type="module" strategy="afterInteractive" />
+      <Script src="https://fast.wistia.com/embed/7jcncibxqi.js" type="module" strategy="afterInteractive" />
+      <style jsx global>{`
+        wistia-player[media-id='1kqkfbf2rd']:not(:defined) {
+          background: center / contain no-repeat url('https://fast.wistia.com/embed/medias/1kqkfbf2rd/swatch');
+          display: block;
+          filter: blur(5px);
+          padding-top:56.25%;
+        }
+        wistia-player[media-id='k1lbncd739']:not(:defined) {
+          background: center / contain no-repeat url('https://fast.wistia.com/embed/medias/k1lbncd739/swatch');
+          display: block;
+          filter: blur(5px);
+          padding-top:56.25%;
+        }
+        wistia-player[media-id='8914b1xoti']:not(:defined) {
+          background: center / contain no-repeat url('https://fast.wistia.com/embed/medias/8914b1xoti/swatch');
+          display: block;
+          filter: blur(5px);
+          padding-top:56.25%;
+        }
+        wistia-player[media-id='7jcncibxqi']:not(:defined) {
+          background: center / contain no-repeat url('https://fast.wistia.com/embed/medias/7jcncibxqi/swatch');
+          display: block;
+          filter: blur(5px);
+          padding-top:56.25%;
+        }
+      `}</style>
       {/* Green Theme Background Effects */}
       <div className="absolute -inset-20 bg-gradient-to-br from-emerald-900/15 via-teal-900/20 to-green-900/15 rounded-3xl blur-3xl" />
       <div className="pointer-events-none absolute -top-24 left-1/3 h-80 w-80 rounded-full bg-gradient-to-br from-green-400/12 via-emerald-400/18 to-teal-400/12 blur-3xl animate-pulse" />
@@ -262,7 +171,7 @@ export default function LongFormShowcase() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
         {videos.map((v, i) => (
-          <div key={`${v.id}-${i}`} className="video-card relative opacity-0 transition-all duration-700 ease-out" style={{ transform: 'translateY(50px)', transitionDelay: `${i * 200}ms` }}>
+          <div key={`${v.wistiaId}-${i}`} className="video-card relative opacity-0 transition-all duration-700 ease-out" style={{ transform: 'translateY(50px)', transitionDelay: `${i * 200}ms` }}>
             <span className="absolute z-10 top-3 left-3 text-xs px-2 py-1 rounded-full bg-white/5 border border-white/20 text-white/80 backdrop-blur">
               {v.title}
             </span>
