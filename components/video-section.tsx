@@ -9,17 +9,17 @@ const VideoSection = memo(function VideoSection() {
       <div className="relative aspect-video bg-gradient-to-br from-gray-900/60 via-slate-900/70 to-gray-800/60 backdrop-blur-sm rounded-md overflow-hidden border border-white/10 shadow-2xl">
         {/* Wistia VSL Embed */}
         <Script src="https://fast.wistia.com/player.js" strategy="afterInteractive" />
-        <Script src="https://fast.wistia.com/embed/l0g4t2l9cj.js" type="module" strategy="afterInteractive" />
+        <Script src="https://fast.wistia.com/embed/5vd2rgc3se.js" type="module" strategy="afterInteractive" />
         <style jsx global>{`
-          wistia-player[media-id='l0g4t2l9cj']:not(:defined) {
-            background: center / contain no-repeat url('https://fast.wistia.com/embed/medias/l0g4t2l9cj/swatch');
+          wistia-player[media-id='5vd2rgc3se']:not(:defined) {
+            background: center / contain no-repeat url('https://fast.wistia.com/embed/medias/5vd2rgc3se/swatch');
             display: block;
             filter: blur(5px);
             padding-top:56.25%;
           }
         `}</style>
         <div className="absolute inset-0">
-          <wistia-player media-id="l0g4t2l9cj" aspect="1.7777777777777777"></wistia-player>
+          <wistia-player media-id="5vd2rgc3se" aspect="1.7777777777777777"></wistia-player>
         </div>
       </div>
 
