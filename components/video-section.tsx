@@ -1,29 +1,14 @@
 "use client"
 
-import { memo, useEffect, useState, useRef } from "react"
-import Script from "next/script"
+import { memo, useEffect, useRef, useState } from "react"
 import Head from "next/head"
 
 const VideoSection = memo(function VideoSection() {
   const [isPlaying, setIsPlaying] = useState(false)
+  const [showPlayer, setShowPlayer] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    // Hook into Wistia player to detect play/pause and optimize surrounding styles
-    const w = (window as any)
-    w._wq = w._wq || []
-    w._wq.push({
-      id: "5vd2rgc3se",
-      onReady: (video: any) => {
-        video.bind("play", () => setIsPlaying(true))
-        video.bind("pause", () => setIsPlaying(false))
-        video.bind("end", () => setIsPlaying(false))
-      },
-    })
-  }, [])
-
-  useEffect(() => {
-    // While playing, ensure the container is promoted to its own layer and heavy effects are reduced
     const el = containerRef.current
     if (!el) return
     if (isPlaying) {
@@ -35,36 +20,52 @@ const VideoSection = memo(function VideoSection() {
     }
   }, [isPlaying])
 
+  // No external player API needed for Vimeo in this lite setup
+
   return (
     <div className="max-w-4xl mx-auto mb-16 -mt-8 relative">
-      {/* Preconnect to Wistia for faster playback start and smoother buffering */}
       <Head>
-        <link rel="preconnect" href="https://fast.wistia.com" />
-        <link rel="preconnect" href="https://embedwistia-a.akamaihd.net" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://player.vimeo.com" />
+        <link rel="preconnect" href="https://i.vimeocdn.com" />
+        <link rel="preconnect" href="https://f.vimeocdn.com" />
       </Head>
       <div
         ref={containerRef}
         className={`relative aspect-video bg-gradient-to-br from-gray-900/60 via-slate-900/70 to-gray-800/60 ${
           isPlaying ? "backdrop-blur-0" : "backdrop-blur-sm"
         } rounded-md overflow-hidden border border-white/10 shadow-2xl`}
-        style={{
-          // Hint the browser to keep this on the GPU compositor; updated dynamically in effect
-          contain: "content",
-        }}
+        style={{ contain: "content" }}
       >
-        {/* Wistia VSL Embed */}
-        <Script src="https://fast.wistia.com/player.js" strategy="afterInteractive" />
-        <Script src="https://fast.wistia.com/embed/5vd2rgc3se.js" type="module" strategy="afterInteractive" />
-        <style jsx global>{`
-          wistia-player[media-id='5vd2rgc3se']:not(:defined) {
-            background: center / contain no-repeat url('https://fast.wistia.com/embed/medias/5vd2rgc3se/swatch');
-            display: block;
-            filter: blur(5px);
-            padding-top:56.25%;
-          }
-        `}</style>
-        <div className="absolute inset-0">
-          <wistia-player media-id="5vd2rgc3se" aspect="1.7777777777777777"></wistia-player>
+        {/* Vimeo VSL Embed (lite) - preserves current poster, loads player instantly on click */}
+        <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, background: "#000" }}>
+          {!showPlayer && (
+            <button
+              type="button"
+              aria-label="Play video"
+              onClick={() => { setShowPlayer(true); setIsPlaying(true) }}
+              // Keep the existing poster image (unchanged)
+              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", background: `center / cover no-repeat url('https://i.ytimg.com/vi/OSPLw0fIq1Q/maxresdefault.jpg')` }}
+            >
+              {/* Fallback gradient overlay and play button */}
+              <span style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(0,0,0,.2), rgba(0,0,0,.35))" }} />
+              <span style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)", width: 84, height: 84, borderRadius: 9999, background: "rgba(0,0,0,.6)", display: "grid", placeItems: "center", boxShadow: "0 10px 30px rgba(0,0,0,.6)", border: "1px solid rgba(255,255,255,.15)" }}>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </span>
+            </button>
+          )}
+          {showPlayer && (
+            <iframe
+              id="vsl-player"
+              src={"https://player.vimeo.com/video/1127184014?autoplay=1&muted=0&controls=0&title=0&byline=0&portrait=0&dnt=1#t=0s"}
+              frameBorder={0}
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowFullScreen
+              loading="eager"
+              style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+            />
+          )}
         </div>
       </div>
 
