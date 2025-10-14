@@ -1,26 +1,10 @@
 "use client"
 
-import { memo, useEffect, useRef, useState } from "react"
+import { memo } from "react"
 import Head from "next/head"
 
 const VideoSection = memo(function VideoSection() {
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [showPlayer, setShowPlayer] = useState(false)
-  const containerRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const el = containerRef.current
-    if (!el) return
-    if (isPlaying) {
-      el.style.willChange = "transform, opacity"
-      el.style.transform = "translateZ(0)"
-    } else {
-      el.style.willChange = "auto"
-      el.style.transform = "none"
-    }
-  }, [isPlaying])
-
-  // No external player API needed for Vimeo in this lite setup
+  
 
   return (
     <div className="max-w-4xl mx-auto mb-16 -mt-8 relative">
@@ -29,42 +13,16 @@ const VideoSection = memo(function VideoSection() {
         <link rel="preconnect" href="https://i.ytimg.com" />
         <link rel="preconnect" href="https://www.google.com" />
       </Head>
-      <div
-        ref={containerRef}
-        className={`relative aspect-video bg-gradient-to-br from-gray-900/60 via-slate-900/70 to-gray-800/60 ${
-          isPlaying ? "backdrop-blur-0" : "backdrop-blur-sm"
-        } rounded-md overflow-hidden border border-white/10 shadow-2xl`}
-        style={{ contain: "content" }}
-      >
-        {/* YouTube VSL Embed (lite) - preserves poster, loads player instantly on click */}
+      <div className="relative aspect-video bg-gradient-to-br from-gray-900/60 via-slate-900/70 to-gray-800/60 rounded-md overflow-hidden border border-white/10 shadow-2xl">
         <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, background: "#000" }}>
-          {!showPlayer && (
-            <button
-              type="button"
-              aria-label="Play video"
-              onClick={() => { setShowPlayer(true); setIsPlaying(true) }}
-              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", background: `center / cover no-repeat url('https://i.ytimg.com/vi/R297c9dftVo/maxresdefault.jpg')` }}
-            >
-              {/* Fallback gradient overlay and play button */}
-              <span style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(0,0,0,.2), rgba(0,0,0,.35))" }} />
-              <span style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)", width: 84, height: 84, borderRadius: 9999, background: "rgba(0,0,0,.6)", display: "grid", placeItems: "center", boxShadow: "0 10px 30px rgba(0,0,0,.6)", border: "1px solid rgba(255,255,255,.15)" }}>
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </span>
-            </button>
-          )}
-          {showPlayer && (
-            <iframe
-              id="vsl-player"
-              src={"https://www.youtube-nocookie.com/embed/R297c9dftVo?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3&controls=0&playsinline=1&fs=0&disablekb=1&cc_load_policy=0"}
-              frameBorder={0}
-              allow="autoplay; encrypted-media; picture-in-picture"
-              allowFullScreen
-              loading="eager"
-              style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
-            />
-          )}
+          <iframe
+            id="vsl-player"
+            src={"https://www.youtube-nocookie.com/embed/R297c9dftVo?rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&controls=1"}
+            frameBorder={0}
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowFullScreen
+            style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+          />
         </div>
       </div>
 
