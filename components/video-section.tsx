@@ -25,9 +25,9 @@ const VideoSection = memo(function VideoSection() {
   return (
     <div className="max-w-4xl mx-auto mb-16 -mt-8 relative">
       <Head>
-        <link rel="preconnect" href="https://player.vimeo.com" />
-        <link rel="preconnect" href="https://i.vimeocdn.com" />
-        <link rel="preconnect" href="https://f.vimeocdn.com" />
+        <link rel="preconnect" href="https://www.youtube.com" />
+        <link rel="preconnect" href="https://i.ytimg.com" />
+        <link rel="preconnect" href="https://www.google.com" />
       </Head>
       <div
         ref={containerRef}
@@ -36,15 +36,14 @@ const VideoSection = memo(function VideoSection() {
         } rounded-md overflow-hidden border border-white/10 shadow-2xl`}
         style={{ contain: "content" }}
       >
-        {/* Vimeo VSL Embed (lite) - preserves current poster, loads player instantly on click */}
+        {/* YouTube VSL Embed (lite) - preserves poster, loads player instantly on click */}
         <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, background: "#000" }}>
           {!showPlayer && (
             <button
               type="button"
               aria-label="Play video"
               onClick={() => { setShowPlayer(true); setIsPlaying(true) }}
-              // Keep the existing poster image (unchanged)
-              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", background: `center / cover no-repeat url('https://i.ytimg.com/vi/OSPLw0fIq1Q/maxresdefault.jpg')` }}
+              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", background: `center / cover no-repeat url('https://i.ytimg.com/vi/R297c9dftVo/maxresdefault.jpg')` }}
             >
               {/* Fallback gradient overlay and play button */}
               <span style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(0,0,0,.2), rgba(0,0,0,.35))" }} />
@@ -58,9 +57,9 @@ const VideoSection = memo(function VideoSection() {
           {showPlayer && (
             <iframe
               id="vsl-player"
-              src={"https://player.vimeo.com/video/1127184014?autoplay=1&muted=0&controls=0&title=0&byline=0&portrait=0&dnt=1#t=0s"}
+              src={"https://www.youtube-nocookie.com/embed/R297c9dftVo?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3&controls=0&playsinline=1&fs=0&disablekb=1&cc_load_policy=0"}
               frameBorder={0}
-              allow="autoplay; fullscreen; picture-in-picture"
+              allow="autoplay; encrypted-media; picture-in-picture"
               allowFullScreen
               loading="eager"
               style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
